@@ -15,6 +15,19 @@ Note: use ```asyncio.run()``` to start an event loop.
 The await keyword is used to await a coroutine and to actually allow it to execute and get the result. Please note that we can only use ```await``` inside of a coroutine function. 
 
 ## Task
-A task is a way to schedule a coroutine to run as soon as possible, allowing to run multiple coroutines concurrently. With tasks, as soon as a single task is waiting on something that is not in control of our program, the processor can move on and start executing another task. 
+A task is a way to schedule a coroutine to run as soon as possible, allowing to run multiple coroutines concurrently. With tasks, as soon as a single task is waiting on something that is not in control of our program, the processor can move on and start executing another task. The files ```TaskGroup.py``` and ```gather.py``` presents two separate ways of creating and running multiple tasks concurrently, using the ```asyncio.TaskGroup``` context manager or using ```asyncio.gather```. While ```asyncio.gather``` is the quickest way to setup some tasks to run concurrently, it struggles in error handling. If an exception is raised inside a tasks, the other tasks within the event loop continue the execution. 
+
+## Synchronization primitives
+The usage of synchronization primitives allows to synchronize the execution of various coroutines. 
+
+### Lock
+Using ```asyncio.Lock()``` as a context manager checks if any other coroutine is currently executing the code within the lock. If so, it is gonna wait until that coroutine is finished. Otherwise it simply executes the code within the lock. In other words, a block of code within the lock context manager cannot be executed by more than one coroutine at the same time. However, code prior to it can still be executed by different tasks concurrently. Please refer to ```lock.py```.
+
+### Semaphore
+Similar to using a ```asyncio.Lock()```, using ```asyncio.Semaphore(value=...)``` allows ```value``` coroutines to have access to the same code under the semaphore context manager concurrently. Please refer to ```semaphore.py```. 
+
+### Event
+A coroutine execution can wait an ```asyncio.Event``` to be set. An event emulates a boolean flag, allowing to block some execution until some event is set to True. Please refer to ```event.py```.
+
 
 
